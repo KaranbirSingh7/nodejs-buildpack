@@ -666,7 +666,7 @@ func (s *Supplier) InstallNPM() error {
 
 	s.Log.Info("Downloading and installing npm %s (replacing version %s)...", s.NPMVersion, npmVersion)
 
-	if err := s.Command.Execute(s.Stager.BuildDir(), ioutil.Discard, ioutil.Discard, "npm", "install", "--unsafe-perm", "--quiet", "-g", "npm@"+s.NPMVersion); err != nil {
+	if err := s.Command.Execute(s.Stager.BuildDir(), os.Stdout, os.Stdout, "npm", "install", "--unsafe-perm", "--quiet", "-g", "npm@"+s.NPMVersion); err != nil {
 		s.Log.Error("We're unable to download the version of npm you've provided (%s).\nPlease remove the npm version specification in package.json", s.NPMVersion)
 		return err
 	}
