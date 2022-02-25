@@ -666,10 +666,18 @@ func (s *Supplier) InstallNPM() error {
 
 	s.Log.Info("Downloading and installing npm %s (replacing version %s)...", s.NPMVersion, npmVersion)
 
-	if err := s.Command.Execute(s.Stager.BuildDir(), os.Stdout, os.Stdout, "npm", "install", "--unsafe-perm", "--quiet", "-g", "npm@"+s.NPMVersion); err != nil {
+	// if err := s.Command.Execute(s.Stager.BuildDir(), os.Stdout, os.Stdout, "npm", "install", "--unsafe-perm", "--quiet", "-g", "npm@"+s.NPMVersion); err != nil {
+	// 	s.Log.Error("We're unable to download the version of npm you've provided (%s).\nPlease remove the npm version specification in package.json", s.NPMVersion)
+	// 	return err
+	// }
+	config := s.Command.Execute(s.Stager.BuildDir(), s.Log.Output(), s.Log.Output(), "npm", "config", "ls", "-l")
+	s.Log.Info("Logging config: ", config)
+
+	if err := s.Command.Execute(s.Stager.BuildDir(), os.Stdout, os.Stdout, "npm", "install", "--unsafe-perm", "-g", "npm@"+s.NPMVersion, "--userconfig", filepath.Join(s.Stager.BuildDir(), ".npmrc")); err != nil {
 		s.Log.Error("We're unable to download the version of npm you've provided (%s).\nPlease remove the npm version specification in package.json", s.NPMVersion)
 		return err
 	}
+
 	return nil
 }
 
